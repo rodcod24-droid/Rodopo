@@ -1,5 +1,5 @@
 rootProject.name = "CloudstreamPlugins"
-include("Cuevana")
+include("CuevanaProvider")
 // This file sets what projects are included.
 // All new projects should get automatically included unless specified in the "disabled" variable.
 
