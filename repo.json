@@ -3,6 +3,6 @@
   "description": "Custom CloudStream extensions repository",
   "manifestVersion": 1,
   "pluginLists": [
-    "https://raw.githubusercontent.com/rodcod24-droid/Rodopo/main/plugins.json"
+    "https://raw.githubusercontent.com/rodcod24-droid/Rodopo/builds/plugins.json"
   ]
 }
