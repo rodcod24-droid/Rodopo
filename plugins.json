@@ -1,11 +1,11 @@
 [
   {
-    "url": "https://github.com/YOURUSERNAME/YOURREPO/releases/latest/download/CuevanaProvider.apk",
+    "url": "https://github.com/rodcod24-droid/Rodopo/releases/latest/download/CuevanaProvider.apk",
     "name": "Cuevana Provider",
     "description": "Cuevana streaming provider for Spanish content",
     "version": 1,
     "authors": ["YourName"],
-    "repositoryUrl": "https://github.com/YOURUSERNAME/YOURREPO",
+    "repositoryUrl": "https://github.com/rodcod24-droid/Rodopo",
     "fileSize": 0,
     "status": 1,
     "language": "es",
