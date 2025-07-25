@@ -1,0 +1,15 @@
+[
+  {
+    "url": "https://github.com/YOURUSERNAME/YOURREPO/releases/latest/download/CuevanaProvider.apk",
+    "name": "Cuevana Provider",
+    "description": "Cuevana streaming provider for Spanish content",
+    "version": 1,
+    "authors": ["YourName"],
+    "repositoryUrl": "https://github.com/YOURUSERNAME/YOURREPO",
+    "fileSize": 0,
+    "status": 1,
+    "language": "es",
+    "tvTypes": ["TvSeries", "Movie"],
+    "iconUrl": "https://www.google.com/s2/favicons?domain=wv5n.cuevana.biz&sz=64"
+  }
+]

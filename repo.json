@@ -1,0 +1,8 @@
+{
+  "name": "My CloudStream Repository",
+  "description": "Custom CloudStream extensions repository",
+  "manifestVersion": 1,
+  "pluginLists": [
+    "https://raw.githubusercontent.com/YOURUSERNAME/YOURREPO/main/plugins.json"
+  ]
+}
