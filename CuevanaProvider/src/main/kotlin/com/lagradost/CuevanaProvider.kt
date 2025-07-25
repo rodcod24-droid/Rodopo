@@ -8,7 +8,7 @@ import com.lagradost.cloudstream3.utils.ExtractorLink
 import com.lagradost.cloudstream3.utils.loadExtractor
 
 class CuevanaProvider : MainAPI() {
-    override var mainUrl = "https://cuevana3.me"
+    override var mainUrl = "https://wv5n.cuevana.biz/"
     override var name = "Cuevana"
     override var lang = "es"
     override val hasMainPage = true
@@ -198,24 +198,24 @@ class CuevanaProvider : MainAPI() {
     ): Boolean {
         app.get(data).document.select("div.TPlayer.embed_div iframe").apmap {
             val iframe = fixUrl(it.attr("data-src"))
-            if (iframe.contains("api.cuevana3.me/fembed/")) {
+            if (iframe.contains("api.cuevana.biz/fembed/")) {
                 val femregex =
-                    Regex("(https.\\/\\/api\\.cuevana3\\.me\\/fembed\\/\\?h=[a-zA-Z0-9]{0,8}[a-zA-Z0-9_-]+)")
+                    Regex("(https.\\/\\/api\\.cuevana\\.biz\\/fembed\\/\\?h=[a-zA-Z0-9]{0,8}[a-zA-Z0-9_-]+)")
                 femregex.findAll(iframe).map { femreg ->
                     femreg.value
                 }.toList().apmap { fem ->
-                    val key = fem.replace("https://api.cuevana3.me/fembed/?h=", "")
+                    val key = fem.replace("https://api.cuevana.biz/fembed/?h=", "")
                     val url = app.post(
                         "https://api.cuevana3.me/fembed/api.php",
                         allowRedirects = false,
                         headers = mapOf(
-                            "Host" to "api.cuevana3.me",
+                            "Host" to "api.cuevana.biz",
                             "User-Agent" to USER_AGENT,
                             "Accept" to "application/json, text/javascript, */*; q=0.01",
                             "Accept-Language" to "en-US,en;q=0.5",
                             "Content-Type" to "application/x-www-form-urlencoded; charset=UTF-8",
                             "X-Requested-With" to "XMLHttpRequest",
-                            "Origin" to "https://api.cuevana3.me",
+                            "Origin" to "https://api.cuevana.biz",
                             "DNT" to "1",
                             "Connection" to "keep-alive",
                             "Sec-Fetch-Dest" to "empty",
@@ -258,15 +258,15 @@ class CuevanaProvider : MainAPI() {
                     ).okhttpResponse.headers.values("location").apmap { loc ->
                         if (loc.contains("goto_ddh.php")) {
                             val gotoregex =
-                                Regex("(\\/\\/api.cuevana3.me\\/ir\\/goto_ddh.php\\?h=[a-zA-Z0-9]{0,8}[a-zA-Z0-9_-]+)")
+                                Regex("(\\/\\/api.cuevana.biz\\/ir\\/goto_ddh.php\\?h=[a-zA-Z0-9]{0,8}[a-zA-Z0-9_-]+)")
                             gotoregex.findAll(loc).map { goreg ->
-                                goreg.value.replace("//api.cuevana3.me/ir/goto_ddh.php?h=", "")
+                                goreg.value.replace("//api.cuevana.biz/ir/goto_ddh.php?h=", "")
                             }.toList().apmap { gotolink ->
                                 app.post(
-                                    "https://api.cuevana3.me/ir/redirect_ddh.php",
+                                    "https://api.cuevana.biz/ir/redirect_ddh.php",
                                     allowRedirects = false,
                                     headers = mapOf(
-                                        "Host" to "api.cuevana3.me",
+                                        "Host" to "api.cuevana.biz",
                                         "User-Agent" to USER_AGENT,
                                         "Accept" to "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
                                         "Accept-Language" to "en-US,en;q=0.5",
@@ -287,14 +287,14 @@ class CuevanaProvider : MainAPI() {
                         }
                         if (loc.contains("index.php?h=")) {
                             val indexRegex =
-                                Regex("(\\/\\/api.cuevana3.me\\/sc\\/index.php\\?h=[a-zA-Z0-9]{0,8}[a-zA-Z0-9_-]+)")
+                                Regex("(\\/\\/api.cuevana.biz\\/sc\\/index.php\\?h=[a-zA-Z0-9]{0,8}[a-zA-Z0-9_-]+)")
                             indexRegex.findAll(loc).map { indreg ->
-                                indreg.value.replace("//api.cuevana3.me/sc/index.php?h=", "")
+                                indreg.value.replace("//api.cuevana.biz/sc/index.php?h=", "")
                             }.toList().apmap { inlink ->
                                 app.post(
-                                    "https://api.cuevana3.me/sc/r.php", allowRedirects = false,
+                                    "https://api.cuevana.biz/sc/r.php", allowRedirects = false,
                                     headers = mapOf(
-                                        "Host" to "api.cuevana3.me",
+                                        "Host" to "api.cuevana.biz",
                                         "User-Agent" to USER_AGENT,
                                         "Accept" to "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
                                         "Accept-Language" to "en-US,en;q=0.5",
