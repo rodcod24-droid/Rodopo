@@ -41,3 +41,8 @@ android {
         jvmTarget = "1.8"
     }
 }
+plugins {
+    id("com.android.library")
+    kotlin("android")
+    id("com.recloudstream.gradle")
+}
