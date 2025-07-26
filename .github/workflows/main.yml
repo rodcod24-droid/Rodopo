@@ -24,20 +24,35 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Build APKs
-        run: ./gradlew assembleRelease
-
-      - name: Get release filename
-        id: get-filename
+      - name: Build CloudStream plugins
         run: |
-          FILENAME=$(find . -name "*.apk" -path "*/build/outputs/apk/release/*" | head -1 | xargs basename)
-          echo "filename=$FILENAME" >> $GITHUB_OUTPUT
+          ./gradlew make makePluginsJson
+          ls -la */build/
+
+      - name: Move and rename outputs
+        run: |
+          mkdir -p outputs
+          find . -name "*.apk" -path "*/build/*" -exec cp {} outputs/ \;
+          find . -name "*.jar" -path "*/build/*" -exec cp {} outputs/ \;
+          # Rename APK files to CS3
+          for file in outputs/*.apk; do
+            if [ -f "$file" ]; then
+              mv "$file" "${file%.apk}.cs3"
+            fi
+          done
+          # Copy plugins.json if it exists
+          if [ -f "plugins.json" ]; then
+            cp plugins.json outputs/
+          fi
+          ls -la outputs/
 
       - name: Upload to release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            */build/outputs/apk/release/*.apk
+            outputs/*.cs3
+            outputs/*.jar
+            outputs/plugins.json
           tag_name: "release-${{ github.run_number }}"
           name: "Release ${{ github.run_number }}"
           generate_release_notes: true
