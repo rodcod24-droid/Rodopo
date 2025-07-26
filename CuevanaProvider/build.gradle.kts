@@ -28,6 +28,9 @@ cloudstream {
     )
 
     iconUrl = "https://www.google.com/s2/favicons?domain=wv5n.cuevana.biz&sz=%size%"
+    
+    // Important: This generates the .cs3 file
+    requiresResources = false
 }
 
 android {
@@ -46,4 +49,8 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+}
+
+dependencies {
+    implementation("com.github.recloudstream:cloudstream:pre-release")
 }
