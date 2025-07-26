@@ -1,7 +1,8 @@
-// Apply plugins using legacy method
-apply(plugin = "com.android.library")
-apply(plugin = "kotlin-android")
-apply(plugin = "com.recloudstream.gradle")
+plugins {
+    id("com.android.library")
+    id("kotlin-android")
+    id("com.recloudstream.gradle")
+}
 
 version = 1
 
