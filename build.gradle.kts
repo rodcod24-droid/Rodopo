@@ -13,6 +13,10 @@ buildscript {
     }
 }
 
+plugins {
+    id("com.recloudstream.gradle") version "master-SNAPSHOT" apply false
+}
+
 allprojects {
     repositories {
         google()
