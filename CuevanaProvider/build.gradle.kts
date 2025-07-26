@@ -1,3 +1,9 @@
+plugins {
+    id("com.android.library")
+    kotlin("android")
+    id("com.recloudstream.gradle")
+}
+
 // use an integer for version numbers
 version = 1
 
@@ -25,11 +31,11 @@ cloudstream {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 34
     }
 
     compileOptions {
@@ -40,9 +46,4 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-}
-plugins {
-    id("com.android.library")
-    kotlin("android")
-    id("com.recloudstream.gradle")
 }
