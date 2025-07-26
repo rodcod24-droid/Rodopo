@@ -1,13 +1,12 @@
 // use an integer for version numbers
 version = 1
 
-
 cloudstream {
     language = "es"
     // All of these properties are optional, you can safely remove them
 
-    // description = "Lorem Ipsum"
-    // authors = listOf("Cloudburst")
+    description = "Cuevana streaming provider for Spanish content"
+    authors = listOf("YourName")
 
     /**
      * Status int as the following:
@@ -18,10 +17,27 @@ cloudstream {
      * */
     status = 1 // will be 3 if unspecified
     tvTypes = listOf(
-        "Anime",
         "TvSeries",
-        "Movie",
+        "Movie"
     )
 
-    iconUrl = "https://www.google.com/s2/favicons?domain=cuevana3.me&sz=%size%"
+    iconUrl = "https://www.google.com/s2/favicons?domain=wv5n.cuevana.biz&sz=%size%"
+}
+
+android {
+    compileSdk = 33
+
+    defaultConfig {
+        minSdk = 21
+        targetSdk = 33
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
