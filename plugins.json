@@ -1,0 +1,17 @@
+[
+  {
+    "iconUrl": "https://www.google.com/s2/favicons?domain=wv5n.cuevana.biz&sz=64",
+    "apiVersion": 1,
+    "repositoryUrl": "https://github.com/rodcod24-droid/Rodopo",
+    "fileSize": null,
+    "status": 1,
+    "language": "es",
+    "authors": ["YourName"],
+    "tvTypes": ["TvSeries", "Movie"],
+    "version": 1,
+    "internalName": "CuevanaProvider",
+    "description": "Cuevana streaming provider for Spanish content",
+    "name": "Cuevana",
+    "url": "https://github.com/rodcod24-droid/Rodopo/releases/latest/download/CuevanaProvider.cs3"
+  }
+]
