@@ -24,26 +24,24 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Build CloudStream plugins
+      - name: Build APK
         run: |
-          ./gradlew make makePluginsJson
-          ls -la */build/
+          ./gradlew assembleRelease
 
-      - name: Move and rename outputs
+      - name: Create CS3 files and prepare outputs
         run: |
           mkdir -p outputs
-          find . -name "*.apk" -path "*/build/*" -exec cp {} outputs/ \;
-          find . -name "*.jar" -path "*/build/*" -exec cp {} outputs/ \;
-          # Rename APK files to CS3
-          for file in outputs/*.apk; do
-            if [ -f "$file" ]; then
-              mv "$file" "${file%.apk}.cs3"
-            fi
+          
+          # Find and copy APK files, rename to CS3
+          find . -name "*.apk" -path "*/build/outputs/apk/release/*" | while read apk_file; do
+            provider_name=$(basename $(dirname $(dirname $(dirname $(dirname $(dirname "$apk_file"))))))
+            cp "$apk_file" "outputs/${provider_name}.cs3"
+            echo "Created: outputs/${provider_name}.cs3"
           done
-          # Copy plugins.json if it exists
-          if [ -f "plugins.json" ]; then
-            cp plugins.json outputs/
-          fi
+          
+          # Copy any JAR files if they exist
+          find . -name "*.jar" -path "*/build/outputs/*" -exec cp {} outputs/ \; 2>/dev/null || true
+          
           ls -la outputs/
 
       - name: Upload to release
@@ -52,7 +50,6 @@ jobs:
           files: |
             outputs/*.cs3
             outputs/*.jar
-            outputs/plugins.json
           tag_name: "release-${{ github.run_number }}"
           name: "Release ${{ github.run_number }}"
           generate_release_notes: true
