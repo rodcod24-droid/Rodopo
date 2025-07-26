@@ -28,15 +28,26 @@ jobs:
         run: |
           ./gradlew assembleRelease
 
-      - name: Create CS3 files and prepare outputs
+      - name: Generate plugins.json and prepare outputs
         run: |
+          ./gradlew make
           mkdir -p outputs
           
-          # Find and copy APK files, rename to CS3
+          # Copy CS3 files
+          find . -name "*.cs3" -exec cp {} outputs/ \;
+          
+          # Copy plugins.json if it exists
+          if [ -f "plugins.json" ]; then
+            cp plugins.json outputs/
+          fi
+          
+          # Find and copy APK files, rename to CS3 if needed
           find . -name "*.apk" -path "*/build/outputs/apk/release/*" | while read apk_file; do
             provider_name=$(basename $(dirname $(dirname $(dirname $(dirname $(dirname "$apk_file"))))))
-            cp "$apk_file" "outputs/${provider_name}.cs3"
-            echo "Created: outputs/${provider_name}.cs3"
+            if [ ! -f "outputs/${provider_name}.cs3" ]; then
+              cp "$apk_file" "outputs/${provider_name}.cs3"
+              echo "Created: outputs/${provider_name}.cs3"
+            fi
           done
           
           # Copy any JAR files if they exist
@@ -50,8 +61,17 @@ jobs:
           files: |
             outputs/*.cs3
             outputs/*.jar
+            outputs/plugins.json
           tag_name: "release-${{ github.run_number }}"
           name: "Release ${{ github.run_number }}"
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to builds branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./outputs
+          publish_branch: builds
+          force_orphan: true
