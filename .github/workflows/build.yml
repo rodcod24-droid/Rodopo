@@ -25,33 +25,39 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build APK
-        run: |
-          ./gradlew assembleRelease
+        run: ./gradlew assembleRelease
 
-      - name: Generate plugins.json and prepare outputs
+      - name: Create CS3 files and prepare outputs
         run: |
-          ./gradlew make
           mkdir -p outputs
           
-          # Copy CS3 files
-          find . -name "*.cs3" -exec cp {} outputs/ \;
-          
-          # Copy plugins.json if it exists
-          if [ -f "plugins.json" ]; then
-            cp plugins.json outputs/
-          fi
-          
-          # Find and copy APK files, rename to CS3 if needed
+          # Find and copy APK files, rename to CS3
           find . -name "*.apk" -path "*/build/outputs/apk/release/*" | while read apk_file; do
             provider_name=$(basename $(dirname $(dirname $(dirname $(dirname $(dirname "$apk_file"))))))
-            if [ ! -f "outputs/${provider_name}.cs3" ]; then
-              cp "$apk_file" "outputs/${provider_name}.cs3"
-              echo "Created: outputs/${provider_name}.cs3"
-            fi
+            cp "$apk_file" "outputs/${provider_name}.cs3"
+            echo "Created: outputs/${provider_name}.cs3"
           done
           
-          # Copy any JAR files if they exist
-          find . -name "*.jar" -path "*/build/outputs/*" -exec cp {} outputs/ \; 2>/dev/null || true
+          # Create plugins.json manually
+          cat > outputs/plugins.json << 'EOF'
+          [
+            {
+              "iconUrl": "https://www.google.com/s2/favicons?domain=wv5n.cuevana.biz&sz=64",
+              "apiVersion": 1,
+              "repositoryUrl": "https://github.com/${{ github.repository }}",
+              "fileSize": null,
+              "status": 1,
+              "language": "es",
+              "authors": ["YourName"],
+              "tvTypes": ["TvSeries", "Movie"],
+              "version": 1,
+              "internalName": "CuevanaProvider",
+              "description": "Cuevana streaming provider for Spanish content",
+              "name": "Cuevana",
+              "url": "https://github.com/${{ github.repository }}/releases/latest/download/CuevanaProvider.cs3"
+            }
+          ]
+          EOF
           
           ls -la outputs/
 
@@ -60,7 +66,6 @@ jobs:
         with:
           files: |
             outputs/*.cs3
-            outputs/*.jar
             outputs/plugins.json
           tag_name: "release-${{ github.run_number }}"
           name: "Release ${{ github.run_number }}"
