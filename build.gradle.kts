@@ -1,33 +1,26 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://jitpack.io")
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.2.2")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
+    }
+}
+
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
+    id("com.android.library") version "8.2.2" apply false
+    id("org.jetbrains.kotlin.android") version "1.9.22" apply false
 }
 
-android {
-    compileSdk = 34
-    namespace = "com.lagradost"
-    
-    defaultConfig {
-        minSdk = 21
-        targetSdk = 34
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://jitpack.io")
+        gradlePluginPortal()
     }
-    
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-    
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
-    }
-}
-
-dependencies {
-    implementation("com.github.recloudstream:cloudstream:pre-release")
 }
