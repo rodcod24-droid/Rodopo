@@ -1,6 +1,6 @@
 {
-  "name": "My CloudStream Repository",
-  "description": "Custom CloudStream extensions repository",
+  "name": "Rodopo CloudStream Repository",
+  "description": "Custom CloudStream extensions repository with Cuevana Pro provider",
   "manifestVersion": 1,
   "pluginLists": [
     "https://raw.githubusercontent.com/rodcod24-droid/Rodopo/builds/plugins.json"
