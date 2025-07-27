@@ -21,11 +21,23 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Build APK
-        run: ./gradlew assembleRelease
+      - name: Clean and Build APK
+        run: |
+          ./gradlew clean
+          ./gradlew assembleRelease --stacktrace
 
       - name: Create CS3 files and prepare outputs
         run: |
@@ -33,33 +45,46 @@ jobs:
           
           # Find and copy APK files, rename to CS3
           find . -name "*.apk" -path "*/build/outputs/apk/release/*" | while read apk_file; do
-            provider_name=$(basename $(dirname $(dirname $(dirname $(dirname $(dirname "$apk_file"))))))
-            cp "$apk_file" "outputs/${provider_name}.cs3"
-            echo "Created: outputs/${provider_name}.cs3"
+            if [ -f "$apk_file" ]; then
+              provider_name=$(basename $(dirname $(dirname $(dirname $(dirname $(dirname "$apk_file"))))))
+              cp "$apk_file" "outputs/${provider_name}.cs3"
+              echo "Created: outputs/${provider_name}.cs3"
+              
+              # Get file size
+              file_size=$(stat -c%s "$apk_file" 2>/dev/null || stat -f%z "$apk_file" 2>/dev/null || echo "null")
+              echo "File size: $file_size bytes"
+            fi
           done
           
-          # Create plugins.json manually
-          cat > outputs/plugins.json << 'EOF'
+          # Create plugins.json with updated information
+          cat > outputs/plugins.json << EOF
           [
             {
-              "iconUrl": "https://www.google.com/s2/favicons?domain=wv5n.cuevana.biz&sz=64",
+              "iconUrl": "https://www.google.com/s2/favicons?domain=w3nv.cuevana.pro&sz=64",
               "apiVersion": 1,
               "repositoryUrl": "https://github.com/${{ github.repository }}",
               "fileSize": null,
               "status": 1,
               "language": "es",
-              "authors": ["YourName"],
+              "authors": ["rodcod24-droid"],
               "tvTypes": ["TvSeries", "Movie"],
-              "version": 1,
+              "version": ${{ github.run_number }},
               "internalName": "CuevanaProvider",
-              "description": "Cuevana streaming provider for Spanish content",
-              "name": "Cuevana",
+              "description": "Cuevana streaming provider for Spanish content from w3nv.cuevana.pro",
+              "name": "Cuevana Pro",
               "url": "https://github.com/${{ github.repository }}/releases/latest/download/CuevanaProvider.cs3"
             }
           ]
           EOF
           
+          echo "Contents of outputs directory:"
           ls -la outputs/
+          
+          # Verify CS3 files exist
+          if [ ! -f outputs/CuevanaProvider.cs3 ]; then
+            echo "Error: CuevanaProvider.cs3 not found!"
+            exit 1
+          fi
 
       - name: Upload to release
         uses: softprops/action-gh-release@v1
@@ -67,11 +92,41 @@ jobs:
           files: |
             outputs/*.cs3
             outputs/plugins.json
-          tag_name: "release-${{ github.run_number }}"
-          name: "Release ${{ github.run_number }}"
-          generate_release_notes: true
+          tag_name: "v${{ github.run_number }}"
+          name: "Release v${{ github.run_number }}"
+          body: |
+            ## Cuevana Pro Provider v${{ github.run_number }}
+            
+            Updated Cuevana provider for CloudStream3
+            - Domain: w3nv.cuevana.pro
+            - Language: Spanish
+            - Supports: Movies and TV Series
+            
+            ### Installation
+            1. Add this repository URL to CloudStream3: `https://raw.githubusercontent.com/${{ github.repository }}/builds/repo.json`
+            2. Install the Cuevana Pro extension
+            
+            ### Changes
+            - Updated to use w3nv.cuevana.pro domain
+            - Improved error handling and selectors
+            - Better episode detection for TV series
+            - Enhanced search functionality
+          generate_release_notes: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create repo.json for builds branch
+        run: |
+          cat > outputs/repo.json << EOF
+          {
+            "name": "Rodopo CloudStream Repository",
+            "description": "Custom CloudStream extensions repository with Cuevana Pro provider",
+            "manifestVersion": 1,
+            "pluginLists": [
+              "https://raw.githubusercontent.com/${{ github.repository }}/builds/plugins.json"
+            ]
+          }
+          EOF
 
       - name: Deploy to builds branch
         uses: peaceiris/actions-gh-pages@v3
@@ -80,3 +135,4 @@ jobs:
           publish_dir: ./outputs
           publish_branch: builds
           force_orphan: true
+          commit_message: "Deploy build ${{ github.run_number }}"
