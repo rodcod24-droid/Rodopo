@@ -10,6 +10,9 @@ android {
     defaultConfig {
         minSdk = 21
         targetSdk = 34
+        
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
     
     compileOptions {
@@ -24,25 +27,18 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 }
 
 dependencies {
     implementation("com.github.recloudstream:cloudstream:pre-release")
-}
-
-// Custom task to create CS3 file
-tasks.register<Copy>("makeCS3") {
-    dependsOn("assembleRelease")
     
-    from("$buildDir/outputs/apk/release") {
-        include("*.apk")
-        rename { "CuevanaProvider.cs3" }
-    }
-    into("$rootDir/outputs")
-    
-    doFirst {
-        file("$rootDir/outputs").mkdirs()
-    }
+    // Add these if not already included by cloudstream
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 }
