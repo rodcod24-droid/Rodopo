@@ -1,7 +1,9 @@
+import com.android.build.gradle.LibraryExtension
+
 apply(plugin = "com.android.library")
 apply(plugin = "kotlin-android")
 
-android {
+configure<LibraryExtension> {
     compileSdk = 34
     namespace = "com.lagradost"
 
@@ -20,7 +22,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+}
 
+// Configure Kotlin options separately
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
         jvmTarget = "1.8"
     }
